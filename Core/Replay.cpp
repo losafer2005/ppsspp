@@ -440,7 +440,11 @@ ReplayFileInfo ConvertFileInfo(const PSPFileInfo &data) {
 
 PSPFileInfo ConvertFileInfo(const ReplayFileInfo &info) {
 	PSPFileInfo data;
+#ifdef HAVE_LIBNX
+	data.name = std::string(info.filename, strlen(info.filename));
+#else
 	data.name = std::string(info.filename, strnlen(info.filename, sizeof(info.filename)));
+#endif
 	data.size = info.size;
 	data.access = info.access;
 	data.exists = info.exists != 0;

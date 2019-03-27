@@ -45,6 +45,8 @@ static int hint_location;
 #elif defined(_WIN32)
 static SYSTEM_INFO sys_info;
 #define MEM_PAGE_SIZE (uintptr_t)(sys_info.dwPageSize)
+#elif defined(HAVE_LIBNX)
+#define MEM_PAGE_SIZE 0x1000
 #else
 #define MEM_PAGE_SIZE (getpagesize())
 #endif
@@ -243,7 +245,7 @@ void *AllocateAlignedMemory(size_t size, size_t alignment) {
 	void* ptr =  _aligned_malloc(size,alignment);
 #else
 	void* ptr = NULL;
-#ifdef __ANDROID__
+#if defined(__ANDROID__) || defined(HAVE_LIBNX)
 	ptr = memalign(alignment, size);
 #else
 	if (posix_memalign(&ptr, alignment, size) != 0)

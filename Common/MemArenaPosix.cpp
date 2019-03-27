@@ -17,6 +17,11 @@
 
 #include "ppsspp_config.h"
 
+#ifdef HAVE_LIBNX
+#define ftruncate
+#define MAP_SHARED 0
+#endif
+
 #if !defined(_WIN32) && !defined(ANDROID) && !defined(__APPLE__)
 
 #include <string>

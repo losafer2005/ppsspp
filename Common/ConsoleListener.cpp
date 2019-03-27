@@ -66,6 +66,8 @@ ConsoleListener::ConsoleListener() : bHidden(true)
 	++refCount;
 #elif defined(ANDROID)
 	bUseColor = false;
+#elif defined(HAVE_LIBNX)
+	bUseColor = false;
 #elif defined(IOS)
 	bUseColor = false;
 #elif PPSSPP_PLATFORM(UWP)

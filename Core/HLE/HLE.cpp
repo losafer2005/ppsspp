@@ -601,7 +601,11 @@ size_t hleFormatLogArgs(char *message, size_t sz, const char *argmask) {
 		case 's':
 			if (Memory::IsValidAddress(regval)) {
 				const char *s = Memory::GetCharPointer(regval);
+#ifdef HAVE_LIBNX
+				if (strlen(s) >= 64) {
+#else
 				if (strnlen(s, 64) >= 64) {
+#endif
 					APPEND_FMT("%.64s...", Memory::GetCharPointer(regval));
 				} else {
 					APPEND_FMT("%s", Memory::GetCharPointer(regval));

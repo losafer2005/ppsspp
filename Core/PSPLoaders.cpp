@@ -57,6 +57,10 @@
 #include "Core/HLE/sceKernelModule.h"
 #include "Core/HLE/sceKernelMemory.h"
 
+#ifdef HAVE_LIBNX
+extern char *realpath(const char *name, char *resolved);
+#endif
+
 static void UseLargeMem(int memsize) {
 	if (memsize != 1) {
 		// Nothing requested.

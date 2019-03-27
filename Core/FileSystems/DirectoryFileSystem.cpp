@@ -52,6 +52,13 @@
 #include <fcntl.h>
 #endif
 
+#ifdef HAVE_LIBNX
+#define fseeko fseek
+#define ftello ftell
+#define ftruncate
+#define fileno
+#endif
+
 #if HOST_IS_CASE_SENSITIVE
 static bool FixFilenameCase(const std::string &path, std::string &filename)
 {

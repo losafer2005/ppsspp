@@ -741,7 +741,7 @@ bool EmuScreen::key(const KeyInput &key) {
 	}
 
 	if (!pspKeys.size() || key.deviceId == DEVICE_ID_DEFAULT) {
-		if ((key.flags & KEY_DOWN) && key.keyCode == NKCODE_BACK) {
+		if ((key.flags & PKEY_DOWN) && key.keyCode == NKCODE_BACK) {
 			pauseTrigger_ = true;
 			return true;
 		}
@@ -781,19 +781,19 @@ void EmuScreen::pspKey(int pspKeyCode, int flags) {
 
 	if (pspKeyCode >= VIRTKEY_FIRST) {
 		int vk = pspKeyCode - VIRTKEY_FIRST;
-		if (flags & KEY_DOWN) {
+		if (flags & PKEY_DOWN) {
 			virtKeys[vk] = true;
 			onVKeyDown(pspKeyCode);
 		}
-		if (flags & KEY_UP) {
+		if (flags & PKEY_UP) {
 			virtKeys[vk] = false;
 			onVKeyUp(pspKeyCode);
 		}
 	} else {
 		// ILOG("pspKey %i %i", pspKeyCode, flags);
-		if (flags & KEY_DOWN)
+		if (flags & PKEY_DOWN)
 			__CtrlButtonDown(pspKeyCode);
-		if (flags & KEY_UP)
+		if (flags & PKEY_UP)
 			__CtrlButtonUp(pspKeyCode);
 	}
 }
@@ -889,22 +889,22 @@ void EmuScreen::processAxis(const AxisInput &axis, int direction) {
 		if (axisState != 0) {
 			for (size_t i = 0; i < results.size(); i++) {
 				if (!IsAnalogStickKey(results[i]))
-					pspKey(results[i], KEY_DOWN);
+					pspKey(results[i], PKEY_DOWN);
 			}
 			// Also unpress the other direction (unless both directions press the same key.)
 			for (size_t i = 0; i < resultsOpposite.size(); i++) {
 				if (!IsAnalogStickKey(resultsOpposite[i]) && std::find(results.begin(), results.end(), resultsOpposite[i]) == results.end())
-					pspKey(resultsOpposite[i], KEY_UP);
+					pspKey(resultsOpposite[i], PKEY_UP);
 			}
 		} else if (axisState == 0) {
 			// Release both directions, trying to deal with some erratic controllers that can cause it to stick.
 			for (size_t i = 0; i < results.size(); i++) {
 				if (!IsAnalogStickKey(results[i]))
-					pspKey(results[i], KEY_UP);
+					pspKey(results[i], PKEY_UP);
 			}
 			for (size_t i = 0; i < resultsOpposite.size(); i++) {
 				if (!IsAnalogStickKey(resultsOpposite[i]))
-					pspKey(resultsOpposite[i], KEY_UP);
+					pspKey(resultsOpposite[i], PKEY_UP);
 			}
 		}
 	}

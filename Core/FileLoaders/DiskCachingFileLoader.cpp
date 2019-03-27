@@ -29,6 +29,13 @@
 #include "Core/FileLoaders/DiskCachingFileLoader.h"
 #include "Core/System.h"
 
+#ifdef HAVE_LIBNX
+#define fseeko fseek
+#define ftello ftell
+#define ftruncate
+#define fileno
+#endif
+
 static const char *CACHEFILE_MAGIC = "ppssppDC";
 static const s64 SAFETY_FREE_DISK_SPACE = 768 * 1024 * 1024; // 768 MB
 // Aim to allow this many files cached at once.

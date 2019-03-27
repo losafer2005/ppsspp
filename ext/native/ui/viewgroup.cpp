@@ -721,7 +721,7 @@ bool ScrollView::Key(const KeyInput &input) {
 	if (visibility_ != V_VISIBLE)
 		return ViewGroup::Key(input);
 
-	if (input.flags & KEY_DOWN) {
+	if (input.flags & PKEY_DOWN) {
 		switch (input.keyCode) {
 		case NKCODE_EXT_MOUSEWHEEL_UP:
 			ScrollRelative(-250);
@@ -1336,7 +1336,7 @@ void ChoiceStrip::HighlightChoice(unsigned int choice){
 
 bool ChoiceStrip::Key(const KeyInput &input) {
 	bool ret = false;
-	if (input.flags & KEY_DOWN) {
+	if (input.flags & PKEY_DOWN) {
 		if (IsTabLeftKey(input) && selected_ > 0) {
 			SetSelection(selected_ - 1);
 			ret = true;
@@ -1468,7 +1468,7 @@ const double repeatInterval = 5 * (1.0 / 60.0f);  // 5 frames like before.
 bool KeyEvent(const KeyInput &key, ViewGroup *root) {
 	bool retval = false;
 	// Ignore repeats for focus moves.
-	if ((key.flags & (KEY_DOWN | KEY_IS_REPEAT)) == KEY_DOWN) {
+	if ((key.flags & (PKEY_DOWN | KEY_IS_REPEAT)) == PKEY_DOWN) {
 		if (IsDPadKey(key)) {
 			// Let's only repeat DPAD initially.
 			HeldKey hk;
@@ -1488,7 +1488,7 @@ bool KeyEvent(const KeyInput &key, ViewGroup *root) {
 			retval = true;
 		}
 	}
-	if (key.flags & KEY_UP) {
+	if (key.flags & PKEY_UP) {
 		// We ignore the device ID here (in the comparator for HeldKey), due to the Ouya quirk mentioned above.
 		if (!heldKeys.empty()) {
 			HeldKey hk;
@@ -1526,7 +1526,7 @@ restart:
 			KeyInput key;
 			key.keyCode = iter->key;
 			key.deviceId = iter->deviceId;
-			key.flags = KEY_DOWN;
+			key.flags = PKEY_DOWN;
 			KeyEvent(key, root);
 
 			std::lock_guard<std::mutex> lock(focusLock);

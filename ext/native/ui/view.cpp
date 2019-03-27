@@ -391,13 +391,13 @@ bool Clickable::Key(const KeyInput &key) {
 	}
 	// TODO: Replace most of Update with this.
 	bool ret = false;
-	if (key.flags & KEY_DOWN) {
+	if (key.flags & PKEY_DOWN) {
 		if (IsAcceptKey(key)) {
 			down_ = true;
 			ret = true;
 		}
 	}
-	if (key.flags & KEY_UP) {
+	if (key.flags & PKEY_UP) {
 		if (IsAcceptKey(key)) {
 			if (down_) {
 				Click();
@@ -434,7 +434,7 @@ bool StickyChoice::Key(const KeyInput &key) {
 	}
 
 	// TODO: Replace most of Update with this.
-	if (key.flags & KEY_DOWN) {
+	if (key.flags & PKEY_DOWN) {
 		if (IsAcceptKey(key)) {
 			down_ = true;
 			Click();
@@ -941,7 +941,7 @@ bool TextEdit::Key(const KeyInput &input) {
 		return false;
 	bool textChanged = false;
 	// Process navigation keys. These aren't chars.
-	if (input.flags & KEY_DOWN) {
+	if (input.flags & PKEY_DOWN) {
 		switch (input.keyCode) {
 		case NKCODE_CTRL_LEFT:
 		case NKCODE_CTRL_RIGHT:
@@ -1039,7 +1039,7 @@ bool TextEdit::Key(const KeyInput &input) {
 		}
 	}
 
-	if (input.flags & KEY_UP) {
+	if (input.flags & PKEY_UP) {
 		switch (input.keyCode) {
 		case NKCODE_CTRL_LEFT:
 		case NKCODE_CTRL_RIGHT:
@@ -1147,7 +1147,7 @@ void TriggerButton::GetContentDimensions(const UIContext &dc, float &w, float &h
 }
 
 bool Slider::Key(const KeyInput &input) {
-	if (HasFocus() && (input.flags & (KEY_DOWN | KEY_IS_REPEAT)) == KEY_DOWN) {
+	if (HasFocus() && (input.flags & (PKEY_DOWN | KEY_IS_REPEAT)) == PKEY_DOWN) {
 		if (ApplyKey(input.keyCode)) {
 			Clamp();
 			repeat_ = 0;
@@ -1155,7 +1155,7 @@ bool Slider::Key(const KeyInput &input) {
 			return true;
 		}
 		return false;
-	} else if ((input.flags & KEY_UP) && input.keyCode == repeatCode_) {
+	} else if ((input.flags & PKEY_UP) && input.keyCode == repeatCode_) {
 		repeat_ = -1;
 		return false;
 	} else {
@@ -1262,7 +1262,7 @@ void Slider::GetContentDimensions(const UIContext &dc, float &w, float &h) const
 }
 
 bool SliderFloat::Key(const KeyInput &input) {
-	if (HasFocus() && (input.flags & (KEY_DOWN | KEY_IS_REPEAT)) == KEY_DOWN) {
+	if (HasFocus() && (input.flags & (PKEY_DOWN | KEY_IS_REPEAT)) == PKEY_DOWN) {
 		if (ApplyKey(input.keyCode)) {
 			Clamp();
 			repeat_ = 0;
@@ -1270,7 +1270,7 @@ bool SliderFloat::Key(const KeyInput &input) {
 			return true;
 		}
 		return false;
-	} else if ((input.flags & KEY_UP) && input.keyCode == repeatCode_) {
+	} else if ((input.flags & PKEY_UP) && input.keyCode == repeatCode_) {
 		repeat_ = -1;
 		return false;
 	} else {

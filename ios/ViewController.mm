@@ -469,7 +469,7 @@ static GraphicsContext *graphicsContext;
 			NativeAxis(axis);
 		} else {
 			KeyInput key;
-			key.flags = KEY_DOWN;
+			key.flags = PKEY_DOWN;
 			key.keyCode = iCadeToKeyMap[button];
 			key.deviceId = DEVICE_ID_PAD_0;
 			NativeKey(key);
@@ -490,7 +490,7 @@ static GraphicsContext *graphicsContext;
 		// Pressing Start twice within 1 second will take to the Emu menu
 		if ((lastStartPress + 1.0f) > time_now_d()) {
 			KeyInput key;
-			key.flags = KEY_DOWN;
+			key.flags = PKEY_DOWN;
 			key.keyCode = NKCODE_ESCAPE;
 			key.deviceId = DEVICE_ID_KEYBOARD;
 			NativeKey(key);
@@ -534,7 +534,7 @@ static GraphicsContext *graphicsContext;
 		NativeAxis(axis);
 	} else {
 		KeyInput key;
-		key.flags = KEY_UP;
+		key.flags = PKEY_UP;
 		key.keyCode = iCadeToKeyMap[button];
 		key.deviceId = DEVICE_ID_PAD_0;
 		NativeKey(key);
@@ -569,7 +569,7 @@ static GraphicsContext *graphicsContext;
 {
 	KeyInput key;
 	key.deviceId = DEVICE_ID_PAD_0;
-	key.flags = pressed ? KEY_DOWN : KEY_UP;
+	key.flags = pressed ? PKEY_DOWN : PKEY_UP;
 	key.keyCode = keyCode;
 	NativeKey(key);
 }
@@ -594,7 +594,7 @@ static GraphicsContext *graphicsContext;
 	
 	self.gameController.controllerPausedHandler = ^(GCController *controller) {
 		KeyInput key;
-		key.flags = KEY_DOWN;
+		key.flags = PKEY_DOWN;
 		key.keyCode = NKCODE_ESCAPE;
 		key.deviceId = DEVICE_ID_KEYBOARD;
 		NativeKey(key);

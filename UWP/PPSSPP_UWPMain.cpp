@@ -237,7 +237,7 @@ void PPSSPP_UWPMain::OnKeyDown(int scanCode, Windows::System::VirtualKey virtual
 		KeyInput key{};
 		key.deviceId = DEVICE_ID_KEYBOARD;
 		key.keyCode = iter->second;
-		key.flags = KEY_DOWN | (repeatCount > 1 ? KEY_IS_REPEAT : 0);
+		key.flags = PKEY_DOWN | (repeatCount > 1 ? KEY_IS_REPEAT : 0);
 		NativeKey(key);
 	}
 }
@@ -248,7 +248,7 @@ void PPSSPP_UWPMain::OnKeyUp(int scanCode, Windows::System::VirtualKey virtualKe
 		KeyInput key{};
 		key.deviceId = DEVICE_ID_KEYBOARD;
 		key.keyCode = iter->second;
-		key.flags = KEY_UP;
+		key.flags = PKEY_UP;
 		NativeKey(key);
 	}
 }
@@ -264,14 +264,14 @@ void PPSSPP_UWPMain::OnMouseWheel(float delta) {
 	KeyInput keyInput{};
 	keyInput.keyCode = key;
 	keyInput.deviceId = DEVICE_ID_MOUSE;
-	keyInput.flags = KEY_DOWN | KEY_UP;
+	keyInput.flags = PKEY_DOWN | PKEY_UP;
 	NativeKey(keyInput);
 }
 
 bool PPSSPP_UWPMain::OnHardwareButton(HardwareButton button) {
 	KeyInput keyInput{};
 	keyInput.deviceId = DEVICE_ID_KEYBOARD;
-	keyInput.flags = KEY_DOWN | KEY_UP;
+	keyInput.flags = PKEY_DOWN | PKEY_UP;
 	switch (button) {
 	case HardwareButton::BACK:
 		keyInput.keyCode = NKCODE_BACK;
@@ -301,12 +301,12 @@ void PPSSPP_UWPMain::OnTouchEvent(int touchEvent, int touchId, float x, float y,
 	key.deviceId = DEVICE_ID_MOUSE;
 	if (touchEvent & TOUCH_DOWN) {
 		key.keyCode = NKCODE_EXT_MOUSEBUTTON_1;
-		key.flags = KEY_DOWN;
+		key.flags = PKEY_DOWN;
 		NativeKey(key);
 	}
 	if (touchEvent & TOUCH_UP) {
 		key.keyCode = NKCODE_EXT_MOUSEBUTTON_1;
-		key.flags = KEY_UP;
+		key.flags = PKEY_UP;
 		NativeKey(key);
 	}
 }

@@ -316,7 +316,7 @@ void KeyMappingNewKeyDialog::CreatePopupContents(UI::ViewGroup *parent) {
 bool KeyMappingNewKeyDialog::key(const KeyInput &key) {
 	if (mapped_)
 		return false;
-	if (key.flags & KEY_DOWN) {
+	if (key.flags & PKEY_DOWN) {
 		if (key.keyCode == NKCODE_EXT_MOUSEBUTTON_1) {
 			return true;
 		}
@@ -341,7 +341,7 @@ void KeyMappingNewMouseKeyDialog::CreatePopupContents(UI::ViewGroup *parent) {
 bool KeyMappingNewMouseKeyDialog::key(const KeyInput &key) {
 	if (mapped_)
 		return false;
-	if (key.flags & KEY_DOWN) {
+	if (key.flags & PKEY_DOWN) {
 		if (key.keyCode == NKCODE_ESCAPE) {
 			TriggerFinish(DR_OK);
 			g_Config.bMapMouse = false;
@@ -506,8 +506,8 @@ bool AnalogTestScreen::key(const KeyInput &key) {
 	char buf[512];
 	snprintf(buf, sizeof(buf), "Keycode: %d Device ID: %d [%s%s%s%s]", key.keyCode, key.deviceId,
 		(key.flags & KEY_IS_REPEAT) ? "REP" : "",
-		(key.flags & KEY_UP) ? "UP" : "",
-		(key.flags & KEY_DOWN) ? "DOWN" : "",
+		(key.flags & PKEY_UP) ? "UP" : "",
+		(key.flags & PKEY_DOWN) ? "DOWN" : "",
 		(key.flags & KEY_CHAR) ? "CHAR" : "");
 	if (lastLastKeyEvent_ && lastKeyEvent_) {
 		lastLastKeyEvent_->SetText(lastKeyEvent_->GetText());

@@ -90,7 +90,7 @@ bool ScreenManager::key(const KeyInput &key) {
 	std::lock_guard<std::recursive_mutex> guard(inputLock_);
 	bool result = false;
 	// Send key up to every screen layer.
-	if (key.flags & KEY_UP) {
+	if (key.flags & PKEY_UP) {
 		for (auto &layer : stack_) {
 			result = layer.screen->key(key);
 		}

@@ -89,12 +89,14 @@ LibretroGraphicsContext *LibretroGraphicsContext::CreateGraphicsContext() {
 	}
 	delete ctx;
 
+#ifndef HAVE_LIBNX
 	ctx = new LibretroVulkanContext();
 
 	if (ctx->Init()) {
 		return ctx;
 	}
 	delete ctx;
+#endif
 
 #ifdef _WIN32
 	ctx = new LibretroD3D11Context();

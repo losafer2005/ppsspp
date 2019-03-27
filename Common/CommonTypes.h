@@ -44,6 +44,17 @@ typedef signed __int64 s64;
 
 #else
 
+#ifdef HAVE_LIBNX
+#include <switch.h>
+#ifndef _u64
+#define u64 _u64
+#endif
+
+#ifndef s64
+#define s64 _s64
+#endif
+#endif
+
 typedef unsigned char u8;
 typedef unsigned short u16;
 typedef unsigned int u32;

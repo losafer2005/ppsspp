@@ -713,7 +713,7 @@ extern "C" jboolean Java_org_ppsspp_ppsspp_NativeApp_keyDown(JNIEnv *, jclass, j
 	KeyInput keyInput;
 	keyInput.deviceId = deviceId;
 	keyInput.keyCode = key;
-	keyInput.flags = KEY_DOWN;
+	keyInput.flags = PKEY_DOWN;
 	if (isRepeat) {
 		keyInput.flags |= KEY_IS_REPEAT;
 	}
@@ -724,7 +724,7 @@ extern "C" jboolean Java_org_ppsspp_ppsspp_NativeApp_keyUp(JNIEnv *, jclass, jin
 	KeyInput keyInput;
 	keyInput.deviceId = deviceId;
 	keyInput.keyCode = key;
-	keyInput.flags = KEY_UP;
+	keyInput.flags = PKEY_UP;
 	return NativeKey(keyInput);
 }
 

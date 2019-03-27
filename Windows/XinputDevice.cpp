@@ -321,14 +321,14 @@ void XinputDevice::ApplyButtons(int pad, const XINPUT_STATE &state) {
 		if (downMask & xinput_ctrl_map[i].from) {
 			KeyInput key;
 			key.deviceId = DEVICE_ID_X360_0 + pad;
-			key.flags = KEY_DOWN;
+			key.flags = PKEY_DOWN;
 			key.keyCode = xinput_ctrl_map[i].to;
 			NativeKey(key);
 		}
 		if (upMask & xinput_ctrl_map[i].from) {
 			KeyInput key;
 			key.deviceId = DEVICE_ID_X360_0 + pad;
-			key.flags = KEY_UP;
+			key.flags = PKEY_UP;
 			key.keyCode = xinput_ctrl_map[i].to;
 			NativeKey(key);
 		}

@@ -57,6 +57,12 @@
 #include "GPU/Common/PostShader.h"
 #include "GPU/Debugger/Record.h"
 
+#ifdef HAVE_LIBNX
+#include <switch.h>
+extern "C" Result svcSleepThread(_u64 nano);
+#define usleep(n) svcSleepThread((_u64)n * 1000000)
+#endif
+
 struct FrameBufferState {
 	u32 topaddr;
 	GEBufferFormat fmt;
@@ -596,7 +602,7 @@ static void DoFrameTiming(bool &throttle, bool &skipFrame, float timestep) {
 				sleep_ms(1); // Sleep for 1ms on this thread
 #else
 				const double left = nextFrameTime - curFrameTime;
-				usleep((long)(left * 1000000));
+				usleep((left * 1000000));
 #endif
 				time_update();
 			}
@@ -640,7 +646,7 @@ static void DoFrameIdleTiming() {
 			sleep_ms(1);
 #else
 			const double left = goal - time_now_d();
-			usleep((long)(left * 1000000));
+			usleep((left * 1000000));
 #endif
 			time_update();
 		}
@@ -825,7 +831,7 @@ void hleLagSync(u64 userdata, int cyclesLate) {
 	while (time_now_d() < goal && goal < time_now_d() + 0.01) {
 #ifndef _WIN32
 		const double left = goal - time_now_d();
-		usleep((long)(left * 1000000));
+		usleep((left * 1000000));
 #endif
 		time_update();
 	}

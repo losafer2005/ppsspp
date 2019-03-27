@@ -148,7 +148,7 @@ namespace WindowsRawInput {
 		key.deviceId = DEVICE_ID_KEYBOARD;
 
 		if (raw->data.keyboard.Message == WM_KEYDOWN || raw->data.keyboard.Message == WM_SYSKEYDOWN) {
-			key.flags = KEY_DOWN;
+			key.flags = PKEY_DOWN;
 			key.keyCode = GetTrueVKey(raw->data.keyboard);
 
 			if (key.keyCode) {
@@ -156,7 +156,7 @@ namespace WindowsRawInput {
 				keyboardKeysDown.insert(key.keyCode);
 			}
 		} else if (raw->data.keyboard.Message == WM_KEYUP) {
-			key.flags = KEY_UP;
+			key.flags = PKEY_UP;
 			key.keyCode = GetTrueVKey(raw->data.keyboard);
 
 			if (key.keyCode) {
@@ -232,7 +232,7 @@ namespace WindowsRawInput {
 		for (int i = 0; i < 5; i++) {
 			if (i > 0 || (g_Config.bMouseControl && (GetUIState() == UISTATE_INGAME || g_Config.bMapMouse))) {
 				if (raw->data.mouse.usButtonFlags & rawInputDownID[i]) {
-					key.flags = KEY_DOWN;
+					key.flags = PKEY_DOWN;
 					key.keyCode = windowsTransTable[vkInputID[i]];
 					NativeTouch(touch);
 					if (MouseInWindow(hWnd)) {
@@ -240,16 +240,16 @@ namespace WindowsRawInput {
 					}
 					mouseDown[i] = true;
 				} else if (raw->data.mouse.usButtonFlags & rawInputUpID[i]) {
-					key.flags = KEY_UP;
+					key.flags = PKEY_UP;
 					key.keyCode = windowsTransTable[vkInputID[i]];
 					NativeTouch(touch);
 					if (MouseInWindow(hWnd)) {
 						if (!mouseDown[i]) {
 							// This means they were focused outside, and clicked inside.
 							// Seems intentional, so send a down first.
-							key.flags = KEY_DOWN;
+							key.flags = PKEY_DOWN;
 							NativeKey(key);
-							key.flags = KEY_UP;
+							key.flags = PKEY_UP;
 							NativeKey(key);
 						} else {
 							NativeKey(key);
@@ -312,7 +312,7 @@ namespace WindowsRawInput {
 		// Force-release all held keys on the keyboard to prevent annoying stray inputs.
 		KeyInput key;
 		key.deviceId = DEVICE_ID_KEYBOARD;
-		key.flags = KEY_UP;
+		key.flags = PKEY_UP;
 		for (auto i = keyboardKeysDown.begin(); i != keyboardKeysDown.end(); ++i) {
 			key.keyCode = *i;
 			NativeKey(key);

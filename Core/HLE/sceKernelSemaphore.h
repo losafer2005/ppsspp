@@ -17,6 +17,10 @@
 
 #pragma once
 
+#ifdef HAVE_LIBNX
+#define Semaphore _Semaphore
+#endif
+
 int sceKernelCancelSema(SceUID id, int newCount, u32 numWaitThreadsPtr);
 int sceKernelCreateSema(const char* name, u32 attr, int initVal, int maxVal, u32 optionPtr);
 int sceKernelDeleteSema(SceUID id);

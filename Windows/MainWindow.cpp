@@ -788,7 +788,7 @@ namespace MainWindow
 				}
 				// There's no separate keyup event for mousewheel events, let's pass them both together.
 				// This also means it really won't work great for key mapping :( Need to build a 1 frame delay or something.
-				key.flags = KEY_DOWN | KEY_UP | KEY_HASWHEELDELTA | (wheelDelta << 16);
+				key.flags = PKEY_DOWN | PKEY_UP | KEY_HASWHEELDELTA | (wheelDelta << 16);
 				NativeKey(key);
 			}
 			break;

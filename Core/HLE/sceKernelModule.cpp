@@ -1128,7 +1128,11 @@ static Module *__KernelLoadELFFromPtr(const u8 *ptr, size_t elfSize, u32 loadAdd
 			}
 			bool kernelModule = (head->attribute & 0x1000) != 0;
 			BlockAllocator &memblock = kernelModule ? kernelMemory : userMemory;
+#ifdef HAVE_LIBNX
+			size_t n = strlen(head->modname);
+#else
 			size_t n = strnlen(head->modname, 28);
+#endif
 			const std::string modName = "ELF/" + std::string(head->modname, n);
 			u32 addr = memblock.Alloc(totalSize, fromTop, modName.c_str());
 			if (addr == (u32)-1) {

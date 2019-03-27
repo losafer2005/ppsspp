@@ -153,6 +153,21 @@ else ifneq (,$(findstring ios,$(platform)))
 	PLATFORM_EXT := unix
 	TARGET_ARCH = arm
 
+# Nintendo Switch
+else ifeq ($(platform), libnx)
+   include $(DEVKITPRO)/libnx/switch_rules
+   PIC = 1
+   TARGET := $(TARGET_NAME)_libretro_$(platform).a
+   CPUOPTS := -g -march=armv8-a -mtune=cortex-a57 -mtp=soft -mcpu=cortex-a57+crc+fp+simd
+   PLATCFLAGS = -O3 -D__aarch64__ -ffast-math -funsafe-math-optimizations -fPIE -I$(PORTLIBS)/include/ -I$(LIBNX)/include/ -ffunction-sections -fdata-sections -ftls-model=local-exec -DGLEW_EGL
+   PLATCFLAGS += $(INCLUDE) -D__SWITCH__=1 -DHAVE_LIBNX -D_GLIBCXX_USE_C99_MATH_TR1 -D_LDBL_EQ_DBL -funroll-loops -Dpthread_t='Thread*' -Dpthread_mutex_t=Mutex -Dpthread_mutexattr_t='void*' -Dpthread_attr_t=int -Dpthread_cond_t=CondVar -Dpthread_condattr_t='int' -Dpthread_key_t=int -D_SYS__PTHREADTYPES_H_
+   CXXFLAGS += -fno-rtti
+   WITH_DYNAREC = 1
+   STATIC_LINKING = 1
+   HAVE_NEON = 1
+   TARGET_ARCH = arm64
+   SOURCES_C += ../switch/pthreads_switch.c
+
 # Android
 else ifneq (,$(findstring android,$(platform)))
 	fpic = -fPIC
@@ -439,7 +454,7 @@ all: $(TARGET)
 
 $(TARGET): $(OBJECTS)
 ifeq ($(STATIC_LINKING), 1)
-	$(AR) rcs $A $(OBJECTS)
+	$(AR) rcs $@ $(OBJECTS)
 else
 	$(LD) $(LINKOUT)$@ $(OBJECTS) $(LDFLAGS) $(GL_LIB)
 endif

@@ -363,7 +363,7 @@ bool MainUI::event(QEvent *e) {
 		NativeTouch(input);
 		break;
 	case QEvent::Wheel:
-		NativeKey(KeyInput(DEVICE_ID_MOUSE, ((QWheelEvent*)e)->delta()<0 ? NKCODE_EXT_MOUSEWHEEL_DOWN : NKCODE_EXT_MOUSEWHEEL_UP, KEY_DOWN));
+		NativeKey(KeyInput(DEVICE_ID_MOUSE, ((QWheelEvent*)e)->delta()<0 ? NKCODE_EXT_MOUSEWHEEL_DOWN : NKCODE_EXT_MOUSEWHEEL_UP, PKEY_DOWN));
 		break;
 	case QEvent::KeyPress:
 		{
@@ -372,7 +372,7 @@ bool MainUI::event(QEvent *e) {
 			int nativeKeycode = 0;
 			if (iter != KeyMapRawQttoNative.end()) {
 				nativeKeycode = iter->second;
-				NativeKey(KeyInput(DEVICE_ID_KEYBOARD, nativeKeycode, KEY_DOWN));
+				NativeKey(KeyInput(DEVICE_ID_KEYBOARD, nativeKeycode, PKEY_DOWN));
 			}
 
 			// Also get the unicode value.
@@ -396,7 +396,7 @@ bool MainUI::event(QEvent *e) {
 		}
 		break;
 	case QEvent::KeyRelease:
-		NativeKey(KeyInput(DEVICE_ID_KEYBOARD, KeyMapRawQttoNative.find(((QKeyEvent*)e)->key())->second, KEY_UP));
+		NativeKey(KeyInput(DEVICE_ID_KEYBOARD, KeyMapRawQttoNative.find(((QKeyEvent*)e)->key())->second, PKEY_UP));
 		break;
 
 	default:

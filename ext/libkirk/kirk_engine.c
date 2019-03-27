@@ -24,6 +24,10 @@
   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
+#ifdef HAVE_LIBNX
+#include <switch.h>
+#endif
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -31,6 +35,7 @@
 #include "kirk_engine.h"
 #include "AES.h"
 #include "SHA1.h"
+
 
 /* ------------------------- KEY VAULT ------------------------- */
 

@@ -136,7 +136,9 @@ std::string GetLocalIP(int sock) {
 	union {
 		struct sockaddr sa;
 		struct sockaddr_in ipv4;
+#ifndef HAVE_LIBNX
 		struct sockaddr_in6 ipv6;
+#endif
 	} server_addr;
 	memset(&server_addr, 0, sizeof(server_addr));
 	socklen_t len = sizeof(server_addr);
@@ -145,10 +147,13 @@ std::string GetLocalIP(int sock) {
 
 		// We clear the port below for WSAAddressToStringA.
 		void *addr;
+#ifndef HAVE_LIBNX
 		if (server_addr.sa.sa_family == AF_INET6) {
 			server_addr.ipv6.sin6_port = 0;
 			addr = &server_addr.ipv6.sin6_addr;
-		} else {
+		} else 
+#endif
+    {
 			server_addr.ipv4.sin_port = 0;
 			addr = &server_addr.ipv4.sin_addr;
 		}

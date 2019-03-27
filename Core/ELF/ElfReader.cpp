@@ -24,6 +24,10 @@
 #include "Core/HLE/sceKernelMemory.h"
 #include "Core/HLE/sceKernelModule.h"
 
+#ifdef HAVE_LIBNX
+#define strnlen(str, n) strlen(str);
+#endif
+
 const char *ElfReader::GetSectionName(int section) const {
 	if (sections[section].sh_type == SHT_NULL)
 		return nullptr;
