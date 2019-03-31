@@ -90,8 +90,9 @@ bool FileBlockDevice::ReadBlock(int blockNumber, u8 *outPtr, bool uncached) {
 }
 
 bool FileBlockDevice::ReadBlocks(u32 minBlock, int count, u8 *outPtr) {
-	if (fileLoader_->ReadAt((u64)minBlock * (u64)GetBlockSize(), 2048, count, outPtr) != (size_t)count) {
-		ERROR_LOG(FILESYS, "Could not read %d bytes from block", 2048 * count);
+    size_t result = fileLoader_->ReadAt((u64)minBlock * (u64)GetBlockSize(), 2048, count, outPtr);
+	if (result != (size_t)count) {
+		ERROR_LOG(FILESYS, "Could not read %d bytes from block (got result %d, errno %s)", 2048 * count, result, strerror(errno));
 		return false;
 	}
 	return true;

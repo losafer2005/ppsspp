@@ -94,7 +94,7 @@ bool GenericLogEnabled(LogTypes::LOG_LEVELS level, LogTypes::LOG_TYPE type);
 #define MAX_LOGLEVEL DEBUG_LEVEL
 #else
 #ifndef MAX_LOGLEVEL
-#define MAX_LOGLEVEL INFO_LEVEL
+#define MAX_LOGLEVEL DEBUG_LEVEL
 #endif // loglevel
 #endif // logging
 

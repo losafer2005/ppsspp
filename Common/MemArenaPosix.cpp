@@ -39,6 +39,10 @@
 static const std::string tmpfs_location = "/dev/shm";
 static const std::string tmpfs_ram_temp_file = "/dev/shm/gc_mem.tmp";
 
+#ifdef HAVE_LIBNX
+static intptr_t memoryBase = 0;
+#endif
+
 // do not make this "static"
 std::string ram_temp_file = "/tmp/gc_mem.tmp";
 
@@ -51,6 +55,7 @@ bool MemArena::NeedsProbing() {
 }
 
 void MemArena::GrabLowMemSpace(size_t size) {
+#ifndef HAVE_LIBNX
 	mode_t mode = S_IRUSR | S_IWUSR | S_IRGRP | S_IROTH;
 
 	// Some platforms (like Raspberry Pi) end up flushing to disk.
@@ -78,15 +83,23 @@ void MemArena::GrabLowMemSpace(size_t size) {
 	if (ftruncate(fd, size) != 0) {
 		ERROR_LOG(MEMMAP, "Failed to ftruncate %d (%s) to size %08x", (int)fd, ram_temp_file.c_str(), (int)size);
 	}
+#endif
 	return;
 }
 
 void MemArena::ReleaseSpace() {
+#ifndef HAVE_LIBNX
 	close(fd);
+#endif
 }
 
 void *MemArena::CreateView(s64 offset, size_t size, void *base)
 {
+#ifdef HAVE_LIBNX
+    //if(!memoryBase)
+        //return (void*)NULL;
+    return base; //(void*)((intptr_t)base + offset);
+#else
 	void *retval = mmap(base, size, PROT_READ | PROT_WRITE, MAP_SHARED |
 // Do not sync memory to underlying file. Linux has this by default.
 #if defined(__DragonFly__) || defined(__FreeBSD__)
@@ -99,10 +112,13 @@ void *MemArena::CreateView(s64 offset, size_t size, void *base)
 		return 0;
 	}
 	return retval;
+#endif
 }
 
 void MemArena::ReleaseView(void* view, size_t size) {
+#ifndef HAVE_LIBNX
 	munmap(view, size);
+#endif
 }
 
 u8* MemArena::Find4GBBase() {
@@ -110,7 +126,8 @@ u8* MemArena::Find4GBBase() {
 #if PPSSPP_ARCH(64BIT) && !defined(USE_ADDRESS_SANITIZER)
 	// Very precarious - mmap cannot return an error when trying to map already used pages.
 	// This makes the Windows approach above unusable on Linux, so we will simply pray...
-	return reinterpret_cast<u8*>(0x2300000000ULL);
+    memoryBase = (intptr_t)memalign(0x1000, 0x10000000);
+	return (u8*)memoryBase; //reinterpret_cast<u8*>(0x2300000000ULL);
 #else
 	size_t size = 0x10000000;
 	void* base = mmap(0, size, PROT_READ | PROT_WRITE,

@@ -59,8 +59,7 @@
 
 #ifdef HAVE_LIBNX
 #include <switch.h>
-extern "C" Result svcSleepThread(_u64 nano);
-#define usleep(n) svcSleepThread((_u64)n * 1000000)
+#define usleep(n) svcSleepThread((_s64)n * 1000)
 #endif
 
 struct FrameBufferState {
