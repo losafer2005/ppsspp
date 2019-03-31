@@ -121,9 +121,11 @@ std::string LocalFileLoader::Path() const {
 }
 
 size_t LocalFileLoader::ReadAt(s64 absolutePos, size_t bytes, size_t count, void *data, Flags flags) {
-#ifndef HAVE_LIBNX
-
-#if PPSSPP_PLATFORM(ANDROID)
+#if defined(HAVE_LIBNX)
+	std::lock_guard<std::mutex> guard(readLock_);
+	lseek(fd_, absolutePos, SEEK_SET);
+	return read(fd_, data, bytes * count) / bytes;
+#elif PPSSPP_PLATFORM(ANDROID)
 	// pread64 doesn't appear to actually be 64-bit safe, though such ISOs are uncommon.  See #10862.
 	if (absolutePos <= 0x7FFFFFFF) {
 #if defined(_FILE_OFFSET_BITS) && _FILE_OFFSET_BITS < 64
@@ -150,8 +152,5 @@ size_t LocalFileLoader::ReadAt(s64 absolutePos, size_t bytes, size_t count, void
 	offset.OffsetHigh = (DWORD)((absolutePos & 0xffffffff00000000) >> 32);
 	auto result = ReadFile(handle_, data, (DWORD)(bytes * count), &read, &offset);
 	return result == TRUE ? (size_t)read / bytes : -1;
-#endif
-#else
-	return 0;
 #endif
 }
