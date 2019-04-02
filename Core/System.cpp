@@ -489,6 +489,7 @@ void PSP_RunLoopFor(int cycles) {
 void PSP_SetLoading(const std::string &reason) {
 	std::lock_guard<std::mutex> guard(loadingReasonLock);
 	loadingReason = reason;
+	INFO_LOG(SYSTEM, reason.c_str());
 }
 
 std::string PSP_GetLoading() {

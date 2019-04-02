@@ -110,7 +110,7 @@ GPU_Vulkan::GPU_Vulkan(GraphicsContext *gfxCtx, Draw::DrawContext *draw)
 			LoadCache(shaderCachePath_);
 			shaderCacheLoaded_ = true;
 		});
-		th.detach();
+		th.join();
 	} else {
 		shaderCacheLoaded_ = true;
 	}

@@ -8,7 +8,7 @@
 #include "GPU/GPUState.h"
 #include "Common/MemoryUtil.h"
 
-#if 0 // def _DEBUG
+#if 1 // def _DEBUG
 #define VLOG ILOG
 #else
 #define VLOG(...)

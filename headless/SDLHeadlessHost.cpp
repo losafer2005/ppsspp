@@ -188,7 +188,7 @@ bool SDLHeadlessHost::InitGraphics(std::string *error_message, GraphicsContext *
 		gfx_->ShutdownFromRenderThread();
 		threadState_ = RenderThreadState::STOPPED;
 	});
-	th.detach();
+	th.join();
 
 	LoadNativeAssets();
 

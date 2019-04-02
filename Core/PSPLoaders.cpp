@@ -277,7 +277,10 @@ bool Load_PSP_ISO(FileLoader *fileLoader, std::string *error_string) {
 			PSP_CoreParameter().fileToStart = "";
 		}
 	});
-	th.detach();
+
+	th.join();
+	PSP_SetLoading("Load_PSP_ISO done...");
+
 	return true;
 }
 
@@ -398,7 +401,7 @@ bool Load_PSP_ELF_PBP(FileLoader *fileLoader, std::string *error_string) {
 			PSP_CoreParameter().fileToStart = "";
 		}
 	});
-	th.detach();
+	th.join();
 	return true;
 }
 
@@ -421,6 +424,6 @@ bool Load_PSP_GE_Dump(FileLoader *fileLoader, std::string *error_string) {
 			PSP_CoreParameter().fileToStart = "";
 		}
 	});
-	th.detach();
+	th.join();
 	return true;
 }

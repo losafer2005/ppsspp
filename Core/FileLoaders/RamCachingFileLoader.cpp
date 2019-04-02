@@ -245,7 +245,7 @@ void RamCachingFileLoader::StartReadAhead(s64 pos) {
 
 		aheadThread_ = false;
 	});
-	th.detach();
+	th.join();
 }
 
 u32 RamCachingFileLoader::NextAheadBlock() {

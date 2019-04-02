@@ -280,5 +280,5 @@ void CachingFileLoader::StartReadAhead(s64 pos) {
 
 		aheadThread_ = false;
 	});
-	th.detach();
+	th.join();
 }

@@ -196,6 +196,7 @@ T hleDoLog(LogTypes::LOG_TYPE t, LogTypes::LOG_LEVELS level, T res, const char *
 }
 
 // This is just a quick way to force logging to be more visible for one file.
+#define HLE_LOG_FORCE
 #ifdef HLE_LOG_FORCE
 #define HLE_LOG_LDEBUG LNOTICE
 #define HLE_LOG_LVERBOSE LDEBUG
