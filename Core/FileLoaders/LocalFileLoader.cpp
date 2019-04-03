@@ -122,7 +122,7 @@ std::string LocalFileLoader::Path() const {
 
 size_t LocalFileLoader::ReadAt(s64 absolutePos, size_t bytes, size_t count, void *data, Flags flags) {
 #if defined(HAVE_LIBNX)
-	std::lock_guard<std::mutex> guard(readLock_);
+	//std::lock_guard<std::mutex> guard(readLock_);
 	lseek(fd_, absolutePos, SEEK_SET);
 	return read(fd_, data, bytes * count) / bytes;
 #elif PPSSPP_PLATFORM(ANDROID)

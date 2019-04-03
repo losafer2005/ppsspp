@@ -412,7 +412,9 @@ Download::~Download() {
 
 void Download::Start(std::shared_ptr<Download> self) {
 	std::thread th(std::bind(&Download::Do, this, self));
-	th.join();
+#ifndef HAVE_LIBNX
+	th.detach();
+#endif
 }
 
 void Download::SetFailed(int code) {

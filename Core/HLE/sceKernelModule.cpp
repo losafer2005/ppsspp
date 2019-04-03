@@ -1670,21 +1670,15 @@ bool __KernelLoadExec(const char *filename, u32 paramPtr, std::string *error_str
 	option.attribute = PSP_THREAD_ATTR_USER;
 	option.mpidstack = 2;
 	option.priority = 0x20;
-#ifndef HAVE_LIBNX
 	option.stacksize = 0x40000;	// crazy? but seems to be the truth
-#else
-	option.stacksize = 0x10000; // :feelsbaguetteman: dkp
-#endif
 
 	// Replace start options with module-specified values if they exist.
 	if (module->nm.module_start_thread_attr != 0)
 		option.attribute = module->nm.module_start_thread_attr;
 	if (module->nm.module_start_thread_priority != 0)
 		option.priority = module->nm.module_start_thread_priority;
-#ifndef HAVE_LIBNX
 	if (module->nm.module_start_thread_stacksize != 0)
 		option.stacksize = module->nm.module_start_thread_stacksize;
-#endif
 
 	PSP_SetLoading("Starting modules...");
 	if (paramPtr){ 
@@ -1912,7 +1906,7 @@ static u32 sceKernelLoadModuleNpDrm(const char *name, u32 flags, u32 optionAddr)
 static void sceKernelStartModule(u32 moduleId, u32 argsize, u32 argAddr, u32 returnValueAddr, u32 optionAddr)
 {
 	u32 priority = 0x20;
-	u32 stacksize = 0x10000; 
+	u32 stacksize = 0x40000; 
 	u32 attr = 0;
 	int stackPartition = 0;
 	SceKernelSMOption smoption = {0};

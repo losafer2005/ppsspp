@@ -338,7 +338,7 @@ void retro_init(void) {
 		logman->ChangeFileLog(nullptr);
 		logman->AddListener(printfLogger);
 #if 1
-		logman->SetAllLogLevels(LogTypes::LVERBOSE);
+		logman->SetAllLogLevels(LogTypes::LNOTICE);
 #endif
 	}
 }

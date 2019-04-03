@@ -278,7 +278,11 @@ bool Load_PSP_ISO(FileLoader *fileLoader, std::string *error_string) {
 		}
 	});
 
+#ifndef HAVE_LIBNX
+	th.detach();
+#else
 	th.join();
+#endif
 	PSP_SetLoading("Load_PSP_ISO done...");
 
 	return true;
@@ -401,7 +405,11 @@ bool Load_PSP_ELF_PBP(FileLoader *fileLoader, std::string *error_string) {
 			PSP_CoreParameter().fileToStart = "";
 		}
 	});
+#ifndef HAVE_LIBNX
+	th.detach();
+#else
 	th.join();
+#endif
 	return true;
 }
 
@@ -424,6 +432,10 @@ bool Load_PSP_GE_Dump(FileLoader *fileLoader, std::string *error_string) {
 			PSP_CoreParameter().fileToStart = "";
 		}
 	});
+#ifndef HAVE_LIBNX
+	th.detach();
+#else
 	th.join();
+#endif
 	return true;
 }

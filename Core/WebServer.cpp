@@ -262,7 +262,9 @@ bool StartWebServer(WebServerFlags flags) {
 		serverStatus = ServerStatus::STARTING;
 		serverFlags = (int)flags;
 		serverThread = std::thread(&ExecuteWebServer);
+#ifndef HAVE_LIBNX
 		serverThread.detach();
+#endif
 		return true;
 
 	default:

@@ -280,5 +280,7 @@ void CachingFileLoader::StartReadAhead(s64 pos) {
 
 		aheadThread_ = false;
 	});
-	th.join();
+#ifndef HAVE_LIBNX
+	th.detach();
+#endif
 }
