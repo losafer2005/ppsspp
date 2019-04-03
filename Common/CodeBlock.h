@@ -7,6 +7,11 @@
 #include "Common.h"
 #include "MemoryUtil.h"
 
+#ifdef HAVE_LIBNX
+#include <switch.h>
+extern Jit jitController;
+#endif
+
 // Everything that needs to generate code should inherit from this.
 // You get memory management for free, plus, you can use all emitter functions without
 // having to prefix them with gen-> or something similar.
@@ -46,6 +51,9 @@ private:
 	// A privately used function to set the executable RAM space to something invalid.
 	// For debugging usefulness it should be used to set the RAM to a host specific breakpoint instruction
 	virtual void PoisonMemory(int offset) = 0;
+#ifdef HAVE_LIBNX
+    Jit jitController;
+#endif
 
 public:
 	CodeBlock() : writeStart_(nullptr) {}
@@ -55,7 +63,17 @@ public:
 	void AllocCodeSpace(int size) {
 		region_size = size;
 		// The protection will be set to RW if PlatformIsWXExclusive.
+        
+#ifdef HAVE_LIBNX
+        detectIgnoreJitKernelPatch();
+        jitCreate(&jitController, size);
+        jitTransitionToExecutable(&jitController);
+        //printf("alloc rw\n");
+        svcSetProcessMemoryPermission(envGetOwnProcessHandle(), (u64)jitController.rx_addr, jitController.size, Perm_Rw);
+        region = (u8*)jitController.rx_addr;
+#else
 		region = (u8*)AllocateExecutableMemory(region_size);
+#endif
 		T::SetCodePointer(region);
 	}
 
@@ -63,14 +81,26 @@ public:
 	// uninitialized, it just breaks into the debugger.
 	void ClearCodeSpace(int offset) {
 		if (PlatformIsWXExclusive()) {
+#ifdef HAVE_LIBNX
+            //printf("clear code rw\n");
+            svcSetProcessMemoryPermission(envGetOwnProcessHandle(), (u64)jitController.rx_addr, jitController.size, Perm_Rw);
+#else
 			ProtectMemoryPages(region, region_size, MEM_PROT_READ | MEM_PROT_WRITE);
+#endif
 		}
 		// If not WX Exclusive, no need to call ProtectMemoryPages because we never change the protection from RWX.
 		PoisonMemory(offset);
 		ResetCodePtr(offset);
 		if (PlatformIsWXExclusive()) {
 			// Need to re-protect the part we didn't clear.
+#ifdef HAVE_LIBNX
+            
+            //printf("protect rx\n");
+            jitTransitionToWritable(&jitController);
+            jitTransitionToExecutable(&jitController);
+#else
 			ProtectMemoryPages(region, offset, MEM_PROT_READ | MEM_PROT_EXEC);
+#endif
 		}
 	}
 
@@ -86,7 +116,12 @@ public:
 		// In case the last block made the current page exec/no-write, let's fix that.
 		if (PlatformIsWXExclusive()) {
 			writeStart_ = GetCodePtr();
+#ifdef HAVE_LIBNX
+            //printf("protect rw\n");
+            svcSetProcessMemoryPermission(envGetOwnProcessHandle(), (u64)jitController.rx_addr, jitController.size, Perm_Rw);
+#else
 			ProtectMemoryPages(writeStart_, sizeEstimate, MEM_PROT_READ | MEM_PROT_WRITE);
+#endif
 		}
 	}
 
@@ -94,15 +129,26 @@ public:
 		// OK, we're done. Re-protect the memory we touched.
 		if (PlatformIsWXExclusive() && writeStart_ != nullptr) {
 			const uint8_t *end = GetCodePtr();
+#ifdef HAVE_LIBNX
+            //printf("protect rx\n");
+            jitTransitionToWritable(&jitController);
+            jitTransitionToExecutable(&jitController);
+#else
 			ProtectMemoryPages(writeStart_, end - writeStart_, MEM_PROT_READ | MEM_PROT_EXEC);
+#endif
 			writeStart_ = nullptr;
 		}
 	}
 
 	// Call this when shutting down. Don't rely on the destructor, even though it'll do the job.
 	void FreeCodeSpace() {
+#ifndef HAVE_LIBNX
 		ProtectMemoryPages(region, region_size, MEM_PROT_READ | MEM_PROT_WRITE);
 		FreeMemoryPages(region, region_size);
+#else
+        //printf("close jit\n");
+        jitClose(&jitController);
+#endif
 		region = nullptr;
 		region_size = 0;
 	}
