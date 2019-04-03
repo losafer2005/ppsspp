@@ -132,7 +132,6 @@ void CheckGLExtensions() {
 	gl_extensions.IsGLES = !useCoreContext;
 #endif
 
-#ifndef HAVE_LIBNX
 	const char *renderer = (const char *)glGetString(GL_RENDERER);
 	const char *versionStr = (const char *)glGetString(GL_VERSION);
 	const char *glslVersionStr = (const char *)glGetString(GL_SHADING_LANGUAGE_VERSION);
@@ -173,12 +172,7 @@ void CheckGLExtensions() {
 	}
 
 	ILOG("GPU Vendor : %s ; renderer: %s version str: %s ; GLSL version str: %s", cvendor, renderer ? renderer : "N/A", versionStr ? versionStr : "N/A", glslVersionStr ? glslVersionStr : "N/A");
-#else
-	const char *renderer = "";
-	const char *versionStr = "4.3";
-	const char *glslVersionStr = "4.3";
-	gl_extensions.gpuVendor = GPU_VENDOR_NVIDIA;
-#endif
+
 	if (renderer) {
 		strncpy(gl_extensions.model, renderer, sizeof(gl_extensions.model));
 		gl_extensions.model[sizeof(gl_extensions.model) - 1] = 0;

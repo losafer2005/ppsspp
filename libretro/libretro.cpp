@@ -548,7 +548,7 @@ bool retro_load_game(const struct retro_game_info *game) {
 	Core_SetGraphicsContext(ctx);
 	SetGPUBackend((GPUBackend)g_Config.iGPUBackend);
 
-	useEmuThread = false;
+	useEmuThread = ctx->GetGPUCore() == GPUCORE_GLES;
 
 	CoreParameter coreParam = {};
 	coreParam.enableSound = true;

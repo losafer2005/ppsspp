@@ -1,8 +1,9 @@
 FFMPEGDIR		= $(CORE_DIR)/ffmpeg
 LIBRETRODIR		= $(CORE_DIR)/libretro
+RETROCOMMONDIR	= $(CORE_DIR)/libretro/libretro-common
 COREDIR			= $(CORE_DIR)/Core
 COMMONDIR		= $(CORE_DIR)/Common
-GPUCOMMONDIR		= $(CORE_DIR)/GPU/Common
+GPUCOMMONDIR    = $(CORE_DIR)/GPU/Common
 GPUDIR			= $(CORE_DIR)/GPU
 EXTDIR			= $(CORE_DIR)/ext
 NATIVEDIR		= $(EXTDIR)/native
@@ -23,7 +24,9 @@ INCFLAGS += \
 	-I$(EXTDIR)/libkirk \
 	-I$(EXTDIR)/xbrz \
 	-I$(EXTDIR)/xxhash \
-	-I$(EXTDIR)/glew
+	-I$(EXTDIR)/glew \
+	-I$(RETROCOMMONDIR)/include \
+	-I$(RETROCOMMONDIR)
 
 ifeq ($(PLATFORM_EXT), android)
 	INCFLAGS += -I$(NATIVEDIR)/ext/libzip
@@ -87,10 +90,15 @@ ifeq ($(PLATFORM_EXT), android)
 		$(NATIVEDIR)/gfx_es2/gl3stub.c
 endif
 
-SOURCES_C += $(EXTDIR)/glew/glew.c \
+SOURCES_C += $(RETROCOMMONDIR)/glsym/glsym_gl.c \
+		$(RETROCOMMONDIR)/glsym/rglgen.c \
 		$(NATIVEDIR)/math/fast/fast_math.c \
 		$(NATIVEDIR)/math/fast/fast_matrix.c
 
+SOURCES_CXX += $(COMMONDIR)/GL/GLInterface/EGL.cpp \
+			$(COMMONDIR)/GL/GLInterface/EGLSwitch.cpp \
+			$(COMMONDIR)/GL/GLInterface/GLInterface.cpp
+			
 SOURCES_C += \
 	$(EXTDIR)/libkirk/AES.c \
 	$(EXTDIR)/libkirk/amctrl.c \

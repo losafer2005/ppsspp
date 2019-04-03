@@ -4,6 +4,10 @@
 #include "libretro/LibretroGraphicsContext.h"
 #include "thin3d/GLRenderManager.h"
 
+#ifdef HAVE_LIBNX
+#include "../Common/GL/GLInterfaceBase.h"
+#endif
+
 class LibretroGLContext : public LibretroHWRenderContext {
 public:
 	LibretroGLContext()
@@ -40,4 +44,5 @@ public:
 private:
 	GLRenderManager *renderManager_ = nullptr;
 	bool glewInitDone = false;
+	cInterfaceBase* gl = nullptr;
 };

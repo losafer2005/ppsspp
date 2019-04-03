@@ -6,6 +6,8 @@
 
 #ifdef __ANDROID__
 #include "Common/GL/GLInterface/EGLAndroid.h"
+#elif defined(HAVE_LIBNX)
+#include "Common/GL/GLInterface/EGLSwitch.h"
 #elif defined(__APPLE__)
 #include "Common/GL/GLInterface/AGL.h"
 #elif defined(_WIN32)
@@ -23,6 +25,8 @@
 cInterfaceBase* HostGL_CreateGLInterface(){
 	#ifdef __ANDROID__
 		return new cInterfaceEGLAndroid;
+	#elif defined(HAVE_LIBNX)
+		return new cInterfaceEGLSwitch;
 	#elif defined(__APPLE__)
 		return new cInterfaceAGL;
 	#elif defined(_WIN32)

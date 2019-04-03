@@ -46,7 +46,7 @@ static int hint_location;
 static SYSTEM_INFO sys_info;
 #define MEM_PAGE_SIZE (uintptr_t)(sys_info.dwPageSize)
 #elif defined(HAVE_LIBNX)
-#define MEM_PAGE_SIZE 0x1000
+#define MEM_PAGE_SIZE (0x1000)
 #else
 #define MEM_PAGE_SIZE (getpagesize())
 #endif
@@ -288,7 +288,7 @@ void FreeAlignedMemory(void* ptr) {
 bool PlatformIsWXExclusive() {
 	// Needed on platforms that disable W^X pages for security. Even without block linking, still should be much faster than IR JIT.
 	// This might also come in useful for UWP (Universal Windows Platform) if I'm understanding things correctly.
-#if defined(IOS) || PPSSPP_PLATFORM(UWP) || defined(__OpenBSD__)
+#if defined(IOS) || PPSSPP_PLATFORM(UWP) || defined(__OpenBSD__) || defined(HAVE_LIBNX)
 	return true;
 #else
 	// Returning true here lets you test the W^X path on Windows and other non-W^X platforms.
