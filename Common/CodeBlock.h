@@ -20,6 +20,9 @@ extern Jit jitController;
 
 class CodeBlockCommon {
 public:
+#ifdef HAVE_LIBNX
+    Jit jitController;
+#endif
 	CodeBlockCommon() : region(nullptr), region_size(0) {}
 	virtual ~CodeBlockCommon() {}
 
@@ -28,7 +31,7 @@ public:
 	}
 
 	virtual void SetCodePtr(u8 *ptr) = 0;
-	virtual const u8 *GetCodePtr() const = 0;
+	virtual const u8 *GetCodePtr() = 0;
 
 	u8 *GetBasePtr() {
 		return region;
@@ -51,9 +54,6 @@ private:
 	// A privately used function to set the executable RAM space to something invalid.
 	// For debugging usefulness it should be used to set the RAM to a host specific breakpoint instruction
 	virtual void PoisonMemory(int offset) = 0;
-#ifdef HAVE_LIBNX
-    Jit jitController;
-#endif
 
 public:
 	CodeBlock() : writeStart_(nullptr) {}
@@ -65,26 +65,20 @@ public:
 		// The protection will be set to RW if PlatformIsWXExclusive.
         
 #ifdef HAVE_LIBNX
-        detectIgnoreJitKernelPatch();
         jitCreate(&jitController, size);
-        jitTransitionToExecutable(&jitController);
-        //printf("alloc rw\n");
-        svcSetProcessMemoryPermission(envGetOwnProcessHandle(), (u64)jitController.rx_addr, jitController.size, Perm_Rw);
-        region = (u8*)jitController.rx_addr;
+        printf("[NXJIT]: Initialized RX: %x RW: %x\n", jitController.rx_addr, jitController.rw_addr);
+        region = (u8*)jitController.rw_addr;
 #else
 		region = (u8*)AllocateExecutableMemory(region_size);
 #endif
-		T::SetCodePointer(region);
+        T::SetCodePointer(region);
 	}
 
 	// Always clear code space with breakpoints, so that if someone accidentally executes
 	// uninitialized, it just breaks into the debugger.
 	void ClearCodeSpace(int offset) {
 		if (PlatformIsWXExclusive()) {
-#ifdef HAVE_LIBNX
-            //printf("clear code rw\n");
-            svcSetProcessMemoryPermission(envGetOwnProcessHandle(), (u64)jitController.rx_addr, jitController.size, Perm_Rw);
-#else
+#ifndef HAVE_LIBNX
 			ProtectMemoryPages(region, region_size, MEM_PROT_READ | MEM_PROT_WRITE);
 #endif
 		}
@@ -93,12 +87,7 @@ public:
 		ResetCodePtr(offset);
 		if (PlatformIsWXExclusive()) {
 			// Need to re-protect the part we didn't clear.
-#ifdef HAVE_LIBNX
-            
-            //printf("protect rx\n");
-            jitTransitionToWritable(&jitController);
-            jitTransitionToExecutable(&jitController);
-#else
+#ifndef HAVE_LIBNX
 			ProtectMemoryPages(region, offset, MEM_PROT_READ | MEM_PROT_EXEC);
 #endif
 		}
@@ -113,13 +102,11 @@ public:
 			PanicAlert("Can't nest BeginWrite calls");
 		}
 #endif
+		writeStart_ = GetCodePtr();
+
 		// In case the last block made the current page exec/no-write, let's fix that.
 		if (PlatformIsWXExclusive()) {
-			writeStart_ = GetCodePtr();
-#ifdef HAVE_LIBNX
-            //printf("protect rw\n");
-            svcSetProcessMemoryPermission(envGetOwnProcessHandle(), (u64)jitController.rx_addr, jitController.size, Perm_Rw);
-#else
+#ifndef HAVE_LIBNX
 			ProtectMemoryPages(writeStart_, sizeEstimate, MEM_PROT_READ | MEM_PROT_WRITE);
 #endif
 		}
@@ -127,13 +114,10 @@ public:
 
 	void EndWrite() {
 		// OK, we're done. Re-protect the memory we touched.
-		if (PlatformIsWXExclusive() && writeStart_ != nullptr) {
+		if (PlatformIsWXExclusive()) {
 			const uint8_t *end = GetCodePtr();
-#ifdef HAVE_LIBNX
-            //printf("protect rx\n");
-            jitTransitionToWritable(&jitController);
-            jitTransitionToExecutable(&jitController);
-#else
+
+#ifndef HAVE_LIBNX
 			ProtectMemoryPages(writeStart_, end - writeStart_, MEM_PROT_READ | MEM_PROT_EXEC);
 #endif
 			writeStart_ = nullptr;
@@ -145,10 +129,9 @@ public:
 #ifndef HAVE_LIBNX
 		ProtectMemoryPages(region, region_size, MEM_PROT_READ | MEM_PROT_WRITE);
 		FreeMemoryPages(region, region_size);
-#else
-        //printf("close jit\n");
-        jitClose(&jitController);
 #endif
+		jitClose(&jitController);
+
 		region = nullptr;
 		region_size = 0;
 	}
@@ -157,8 +140,8 @@ public:
 		T::SetCodePointer(ptr);
 	}
 
-	const u8 *GetCodePtr() const override {
-		return T::GetCodePointer();
+	const u8 *GetCodePtr() override {
+			return T::GetCodePointer();
 	}
 
 	void ResetCodePtr(int offset) {

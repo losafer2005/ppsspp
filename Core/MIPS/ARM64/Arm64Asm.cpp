@@ -186,7 +186,7 @@ void Arm64Jit::GenerateFixedCode(const JitOptions &jo) {
 		RET();
 	}
 
-	enterDispatcher = AlignCode16();
+	enterDispatcher = (const u8*)((intptr_t)AlignCode16() - (intptr_t)jitController.rw_addr + (intptr_t)jitController.rx_addr);
 
 	uint32_t regs_to_save = Arm64Gen::ALL_CALLEE_SAVED;
 	uint32_t regs_to_save_fp = Arm64Gen::ALL_CALLEE_SAVED_FP;
@@ -310,6 +310,7 @@ void Arm64Jit::GenerateFixedCode(const JitOptions &jo) {
 	// Let's spare the pre-generated code from unprotect-reprotect.
 	AlignCodePage();
 	jitStartOffset = (int)(GetCodePtr() - start);
+	//start = (const u8*)((intptr_t)// - (intptr_t)jitController.rw_addr + (intptr_t)jitController.rx_addr);
 	// Don't forget to zap the instruction cache! This must stay at the end of this function.
 	FlushIcache();
 	EndWrite();

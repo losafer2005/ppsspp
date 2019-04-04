@@ -184,7 +184,7 @@ void *AllocateExecutableMemory(size_t size) {
 		prot = PROT_READ | PROT_WRITE;  // POST_EXEC is added later in this case.
 
 #ifdef HAVE_LIBNX // Kept for later purposes, outside of CodeBlock.h
-    detectIgnoreJitKernelPatch(); // Cant use it for this method
+    //detectIgnoreJitKernelPatch(); // Cant use it for this method
     jitCreate(&jitController, size);
     jitTransitionToExecutable(&jitController);
     printf("AllocateExecutableMemory\n");
@@ -301,7 +301,7 @@ void FreeAlignedMemory(void* ptr) {
 bool PlatformIsWXExclusive() {
 	// Needed on platforms that disable W^X pages for security. Even without block linking, still should be much faster than IR JIT.
 	// This might also come in useful for UWP (Universal Windows Platform) if I'm understanding things correctly.
-#if defined(IOS) || PPSSPP_PLATFORM(UWP) || defined(__OpenBSD__) || defined(HAVE_LIBNX)
+#if defined(IOS) || PPSSPP_PLATFORM(UWP) || defined(__OpenBSD__)
 	return true;
 #else
 	// Returning true here lets you test the W^X path on Windows and other non-W^X platforms.
