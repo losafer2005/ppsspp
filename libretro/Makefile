@@ -161,6 +161,8 @@ else ifeq ($(platform), libnx)
    CPUOPTS := -g -march=armv8-a -mtune=cortex-a57 -mtp=soft -mcpu=cortex-a57+crc+fp+simd
    PLATCFLAGS = -O3 -D__aarch64__ -ffast-math -funsafe-math-optimizations -fPIE -I$(PORTLIBS)/include/ -I$(LIBNX)/include/ -ffunction-sections -fdata-sections -ftls-model=local-exec -DMASKED_PSP_MEMORY -DGLEW_EGL -DEGL
    PLATCFLAGS += $(INCLUDE) -D__SWITCH__=1 -DMOBILE_DEVICE -DHAVE_LIBNX -D_GLIBCXX_USE_C99_MATH_TR1 -D_LDBL_EQ_DBL -funroll-loops
+   FFMPEGINCFLAGS += -I$(PORTLIBS)/include
+   FFMPEGLIBDIR := -I$(PORTLIBS)/lib
    CXXFLAGS += -fno-rtti
    WITH_DYNAREC = 1
    STATIC_LINKING = 1

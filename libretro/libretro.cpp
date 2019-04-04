@@ -650,7 +650,6 @@ static void retro_input(void) {
 }
 
 void retro_run(void) {
-	INFO_LOG(SYSTEM, "retro_run");
 	if (PSP_IsIniting()) {
 		std::string error_string;
 #if 0
