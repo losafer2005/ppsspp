@@ -30,6 +30,10 @@
 #include "Core/MIPS/ARM64/Arm64Jit.h"
 #include "Core/MIPS/JitCommon/JitCommon.h"
 
+#ifdef HAVE_LIBNX
+Jit* activeJitController;
+#endif
+
 using namespace Arm64Gen;
 
 //static int temp32; // unused?
@@ -186,7 +190,7 @@ void Arm64Jit::GenerateFixedCode(const JitOptions &jo) {
 		RET();
 	}
 
-	enterDispatcher = (const u8*)((intptr_t)AlignCode16() - (intptr_t)jitController.rw_addr + (intptr_t)jitController.rx_addr);
+	enterDispatcher = AlignCode16();
 
 	uint32_t regs_to_save = Arm64Gen::ALL_CALLEE_SAVED;
 	uint32_t regs_to_save_fp = Arm64Gen::ALL_CALLEE_SAVED_FP;
@@ -310,7 +314,6 @@ void Arm64Jit::GenerateFixedCode(const JitOptions &jo) {
 	// Let's spare the pre-generated code from unprotect-reprotect.
 	AlignCodePage();
 	jitStartOffset = (int)(GetCodePtr() - start);
-	//start = (const u8*)((intptr_t)// - (intptr_t)jitController.rw_addr + (intptr_t)jitController.rx_addr);
 	// Don't forget to zap the instruction cache! This must stay at the end of this function.
 	FlushIcache();
 	EndWrite();
