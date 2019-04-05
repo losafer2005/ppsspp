@@ -562,6 +562,7 @@ bool retro_load_game(const struct retro_game_info *game) {
 	coreParam.gpuCore = ctx->GetGPUCore();
 	coreParam.cpuCore = CPUCore::JIT;
 	check_variables(coreParam);
+	g_Config.bVertexDecoderJit = false;
 	
 #if 0
 	g_Config.bVertexDecoderJit = (coreParam.cpuCore == CPUCore::JIT) ? true : false;
