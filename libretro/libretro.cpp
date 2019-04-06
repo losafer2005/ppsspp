@@ -281,6 +281,7 @@ static void check_variables(CoreParameter &coreParam) {
 	ppsspp_locked_cpu_speed.Update(&g_Config.iLockedCPUSpeed);
 	ppsspp_rendering_mode.Update(&g_Config.iRenderingMode);
 	ppsspp_cpu_core.Update((CPUCore *)&g_Config.iCpuCore);
+	ppsspp_cpu_core.Update((CPUCore *)&coreParam.cpuCore);
 
 	ppsspp_language.Update(&g_Config.iLanguage);
 	if (g_Config.iLanguage < 0) {
@@ -338,7 +339,7 @@ void retro_init(void) {
 		logman->ChangeFileLog(nullptr);
 		logman->AddListener(printfLogger);
 #if 1
-		logman->SetAllLogLevels(LogTypes::LVERBOSE);
+		logman->SetAllLogLevels(LogTypes::LNOTICE);
 #endif
 	}
 }
