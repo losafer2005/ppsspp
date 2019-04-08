@@ -319,6 +319,11 @@ namespace MIPSComp {
 						gpr.MapReg(rt, load ? MAP_NOINIT : 0);
 						targetReg = gpr.R(rt);
 					}
+#ifdef HAVE_LIBNX
+					if(o == 43) { // Ghost Issue
+						DISABLE;
+					}
+#endif
 					switch (o) {
 					case 35: LDR(INDEX_UNSIGNED, targetReg, gpr.RPtr(rs), offset); break;
 					case 37: LDRH(INDEX_UNSIGNED, targetReg, gpr.RPtr(rs), offset); break;
@@ -388,6 +393,11 @@ namespace MIPSComp {
 				addrReg = SCRATCH1;
 			}
 
+#ifdef HAVE_LIBNX
+			if(o == 43) { // Ghost Issue
+				DISABLE;
+			}
+#endif
 			switch (o) {
 				// Load
 			case 35: LDR(targetReg, MEMBASEREG, addrReg); break;
